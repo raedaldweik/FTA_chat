@@ -27,7 +27,7 @@ data_dictionary = """
 | Column Name         | Description                                                                 |
 |---------------------|-----------------------------------------------------------------------------|
 | un_id               | Unique identifier for each taxpayer/entity                                 |
-| name                | Name of the company                                            |
+| name                | Name of the company                                                       |
 | vat                 | VAT (Value Added Tax) amount associated with the taxpayer                  |
 | payment             | Payment amount made by the taxpayer                                        |
 | principal_debt      | Principal debt amount owed by the taxpayer                                 |
@@ -37,14 +37,9 @@ data_dictionary = """
 | VAR9                | Additional variable for which details are not provided (e.g., could be null or unspecified) |
 """
 
-
 # Streamlit UI setup
 st.title("Ask Ghassan")
 st.write("Ask me anything!")
-
-# Chatbot conversation state
-if "conversation" not in st.session_state:
-    st.session_state.conversation = []
 
 # User input
 user_input = st.text_input("You:", key="user_input")
@@ -54,17 +49,5 @@ if user_input:
     input_text = f"Refer to the following data dictionary for context:\n\n{data_dictionary}\n\n{user_input}"
     # Query the RAG model
     result = agent_executor.invoke({"input": input_text})["output"]
-    # Append conversation history
-    st.session_state.conversation.append(("User", user_input))
-    st.session_state.conversation.append(("Ghassan", result))
-    user_input = ""  # Clear input after submission
-
-# Display conversation history in a container with autoscroll enabled
-with st.container():
-    for speaker, text in st.session_state.conversation:
-        if speaker == "User":
-            st.write(f"**You:** {text}")
-        else:
-            st.write(f"**Ghassan:** {text}")
-    # Automatically scrolls to the latest conversation entry
-    st_autoscroll = True
+    # Display the response
+    st.write(f"**Ghassan:** {result}")
